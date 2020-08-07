@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .card {
+        opacity: 1;
+        filter: alpha(opacity=100);
+        height: 200px !important;
+        width: 90% !important;
+    }
+</style>
+
+<form method="get" action="." enctype="multipart/form-data">{% csrf_token %}
+    <table class="table">
+        <tbody>
+            {% for offer in packed_data %}
+                <tr>
+                    <td>
+                        {% if offer.0.highlight is True %}
+                        <div class="card mb-3 border-warning rounded bg-light shadow" style="border-width: 2px;">
+                        {% else %}
+                        <div class="card mb-3 border-info rounded bg-light shadow" style="border-width: 2px;">
+                        {% endif %}
+                          <div class="row no-gutters">
+                            <div class="col-md-4">
+                                <img class="card-img-top embed-responsive-item" src="/media/{{offer.1.file}}">
+                            </div>
+                            <div class="col-md-8">
+                              <div class="card-body">
+                                <h5 class="card-title">{{offer.0.title}}</h5>
+                                <p class="card-text">{{offer.0.description}}</p>
+                                <br>
+                                {% if offer.2 is True %}
+                                  <cite>Ogłoszenie kończy się za 1 dzień</cite><br>
+                                    <a type="button" class="btn btn-dark btn-sm w-25" href="/edit_offer/{{offer.0.id}}">Edytuj</a>
+                                    <button class="btn btn-sm btn-danger w-25 offer_delete" type="submit" value="{{offer.0.id}}">Usuń</button>
+                                    <button class="btn btn-sm btn-success w-25 offer_extend" type="submit" value="{{offer.0.id}}">Przedłuż</button>
+                                {% else %}
+                                    <a type="button" class="btn btn-dark btn-sm w-25" href="/edit_offer/{{offer.0.id}}">Edytuj</a>
+                                    <button class="btn btn-sm btn-danger w-25 offer_delete" type="submit" value="{{offer.0.id}}">Usuń</button>
+                                {% endif %}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</form>
+
+
+<!-- delete offer-->
+<script>
+    $(document).ready(function(){
+        $(".offer_delete").click(function(){
+            // get offer id
+            var offer_id = $(this).attr("value");
+            var token = $('input[name="csrfmiddlewaretoken"]').prop('value');
+            var action = 'delete';
+
+            $.ajax({
+                url: "/user_offers/",
+                data: {
+                    offer_id : offer_id,
+                    action : action,
+                    csrfmiddlewaretoken: token,
+                },
+                type: "POST",
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        $(".offer_extend").click(function(){
+            // get offer id
+            var offer_id = $(this).attr("value");
+            var token = $('input[name="csrfmiddlewaretoken"]').prop('value');
+            var action = 'extend';
+
+            $.ajax({
+                url: "/user_offers/",
+                data: {
+                    offer_id : offer_id,
+                    action : action,
+                    csrfmiddlewaretoken: token,
+                },
+                type: "POST",
+            });
+        });
+    });
+</script>
+
+
+{% endblock content %}

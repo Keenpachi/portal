@@ -1,0 +1,10 @@
+asgiref==3.2.7
+Django==3.0.6
+django-crispy-forms==1.9.1
+django-relativedelta==1.1.1
+Pillow==7.1.2
+Pillow-PIL==0.1.dev0
+python-dateutil==2.8.1
+pytz==2020.1
+six==1.15.0
+sqlparse==0.3.1

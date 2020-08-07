@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+  <form method="post" action="." id="form_id" enctype="multipart/form-data">{% csrf_token %}
+    <div class="form-group row" align="center">
+      <label class="col-form-label col-sm-4">Kategoria</label>
+      <div class="col-sm-5">
+          <select class="selectpicker" name="category" data-width="50%" required>
+              <option selected="selected">{{offer_data.category}}</option>
+              {% for category in proper_category_list %}
+                {% if category != offer_data.category %}
+                    <option>{{category}}</option>
+                {% endif %}
+              {% endfor %}
+          </select>
+      </div>
+    </div>
+    <div class="form-group row" align="center">
+      <label class="col-form-label col-sm-4">Tytuł</label>
+      <div class="col-sm-5">
+          <input type="text" class="form-control" name='title' value="{{offer_data.title}}" required>
+      </div>
+    </div>
+    <div class="form-group row" align="center">
+      <label class="col-form-label col-sm-4">Opis skrócony</label>
+      <div class="col-sm-5">
+        <textarea class="form-control" rows="3" name="short_description" required>{{offer_data.short_description}}</textarea>
+      </div>
+    </div>
+    <div class="form-group row" align="center">
+      <label class="col-form-label col-sm-4">Opis pełny</label>
+      <div class="col-sm-5">
+        <textarea class="form-control" rows="3" name="full_description" required>{{offer_data.full_description}}</textarea>
+      </div>
+    </div>
+    <div class="form-group row" align="center">
+      <label class="col-form-label col-sm-4">Aktualna grafika</label>
+      <div class="col-sm-5">
+        {{image_name}}
+      </div>
+    </div>
+
+    <div class="form-group row" align="center">
+      <label class="col-form-label col-sm-4">Nowa grafika</label>
+      <div class="col-sm-5 ml-3" style="text-align: left;">
+        <input type="file" class="custom-file-input" id="id_graphic" name="graphic" accept=".jpg, .png">
+        <label class="custom-file-label graphic" for="id_graphic" data-browse="Wybierz"></label>
+      </div>
+    </div>
+
+    <!-- handle display file name -->
+    <script>
+        $('#id_graphic').on('change',function(){
+            var file_name = $(this).val().split('\\').pop();
+            $('.graphic').html(file_name);
+        })
+    </script>
+
+    <div class="form-group row">
+      <div class="offset-sm-5 py-2 submit">
+          <button type="submit" class="btn btn-primary">Edytuj</button>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="offset-sm-4 pt-5">
+        {% if messages %}
+          {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+              </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+
+  </form>
+</div>
+
+{% endblock content %}

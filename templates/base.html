@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+{% load static %}
+{% load crispy_forms_tags %}
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Title</title>
+
+    <!-- menu font awesome css -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">
+
+    <!-- jquery -->
+    <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <!-- bootstrap 4 -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' rel='stylesheet' />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-input-spinner@1.11.8/src/bootstrap-input-spinner.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" rel="stylesheet"/>
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
+
+</head>
+
+<style>
+    .menu tr {
+        font-size: 18px;
+    }
+    .position {
+        margin-left: 55%;
+        width: 40%;
+        margin-top:10px;
+    }
+    .card-img-top {
+        width: 50%;
+        height: 15vh;
+        background-size: contain;
+        object-fit: cover;
+    }
+
+    .custom {
+        width: 160px !important;
+    }
+
+    .custom_second {
+        width: 360px !important;
+        height: 50px !important;
+    }
+
+    /* setup image opacity */
+    .card {
+        opacity: 0.7;
+        filter: alpha(opacity=70);
+        width: 250px;
+    }
+    .card:hover {
+        opacity: 1.0;
+        filter: alpha(opacity=100);
+    }
+    .bottom_position {
+        position: absolute;
+        bottom: 0px;
+    }
+    .footer_position {
+        position: absolute;
+        bottom: 50px;
+    }
+</style>
+
+
+<body>
+<form method="get" action="." enctype="multipart/form-data">{% csrf_token %}
+    <table class="table table-sm table-borderless small menu">
+        <thead class="thead-dark">
+            <tr align="center">
+                <th scope="col" width="30%" class="text-right">
+                    <a type="button" class="btn btn-warning custom" href="/">Portal</a>
+                </th>
+                {% if user.is_authenticated %}
+                    <th scope="col" width="20%" class="text-left align-middle">
+                        <span class="fa fa-user mr-2"></span>{{user.username}}
+                    </th>
+                    <th scope="col" width="10%">
+                        <div class="dropdown">
+                          <button class="btn btn-secondary dropdown-toggle custom" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Konto</button>
+                          <div class="dropdown-menu text-center" aria-labelledby="dropdownMenuButton">
+                            <a type="button" class="btn btn-info btn-sm custom" href="/user_offers/">Moje Ogłoszenia</a>
+                            <button class="btn btn-sm btn-warning custom" type="submit" name="logout">Wyloguj</button>
+                            <a type="button" class="btn btn-danger btn-sm custom" href="/delete_account/">Usuń konto</a>
+                          </div>
+                        </div>
+                    </th>
+                    <th scope="col" width="20%" class="text-left">
+                        <a type="button" class="btn btn-info" href="/add_offer/">Dodaj Ogłoszenie</a>
+                    </th>
+                {% else %}
+                    <th scope="col" width="20%">
+                        <a type="button" class="btn btn-secondary custom" href="/login/">Zaloguj</a>
+                    </th>
+                    <th scope="col" width="20%" class="text-left">
+                        <a type="button" class="btn btn-secondary custom" href="/register/">Rejestracja</a>
+                    </th>
+                {% endif %}
+            </tr>
+        </thead>
+    </table>
+</form>
+
+{% block content %}
+
+<center>
+    {% if messages %}
+          {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show w-25" style="font-size: 14px;">
+                    {{ message }}
+              </div>
+          {% endfor %}
+    {% endif %}
+</center>
+
+
+<form method="get" action="." enctype="multipart/form-data">
+    <table class="table table-sm table-borderless small menu">
+        <tbody>
+            <tr>
+                <td>
+                    <div class="form-group row no-gutters position">
+                        <div>
+                            <input value="{{search_sequence}}" class="form-control border-secondary border-right-0 rounded-0" name="search_sequence" placeholder="Szukaj" type="search">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" name="search" class="btn btn-outline-secondary border-left-0 rounded-0 rounded-right">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <button type="submit" name="block_view" class="btn btn-outline-secondary"><i class="fa fa-columns"></i></button>
+                    <button type="submit" name="list_view" class="btn btn-outline-secondary"><i class="fa fa-bars"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+
+<form method="get" action="." enctype="multipart/form-data">
+    <input name="template" value="base" hidden>
+    <table class="table table-sm table-borderless small menu">
+        <tbody>
+            <tr class="d-flex" style="margin-left: 35%;">
+                <td style="width:10%">
+                    <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" id="jobs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Praca
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="jobs">
+                        <button type="submit" name="job-employment" class="dropdown-item">Zatrudnie</button>
+                        <button type="submit" name="job-looking" class="dropdown-item">Poszukuje</button>
+                      </div>
+                    </div>
+                </td>
+                <td style="width:14%">
+                    <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" id="electronic" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Elektronika
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="electronic">
+                        <button type="submit" name="electronic-bay" class="dropdown-item">Kupię</button>
+                        <button type="submit" name="electronic-sell" class="dropdown-item">Sprzedam</button>
+                      </div>
+                    </div>
+                </td>
+                <td style="width:10%">
+                    <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" id="services" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Usługi
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="services">
+                        <button type="submit" name="services-order" class="dropdown-item">Zlece</button>
+                        <button type="submit" name="services-do" class="dropdown-item">Wykonam</button>
+                      </div>
+                    </div>
+                </td>
+                <td style="width:10%">
+                    <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" id="house" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dom
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="house">
+                        <button type="submit" name="house-bay" class="dropdown-item">Kupie</button>
+                        <button type="submit" name="house-sell" class="dropdown-item">Sprzedam</button>
+                      </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+
+
+
+<table class="table">
+    <tbody>
+        {% for row in portioned_data %}
+        <tr>
+            <td>
+                <center>
+                    {% if row.0.0.highlight is True %}
+                    <div class="card mb-3 mb-5 border-warning rounded bg-white shadow" style="border-width: 2px;">
+                    {% else %}
+                    <div class="card mb-3 mb-5 border-info rounded bg-white shadow" style="border-width: 2px;">
+                    {% endif %}
+                        <div class="embed-responsive embed-responsive-1by1">
+                            {% if row.0.1.file %}
+                                <img class="card-img-top embed-responsive-item" src="/media/{{row.0.1.file}}">
+                            {% else %}
+                                <img class="card-img-top embed-responsive-item" src="/media/graphic/default.png">
+                            {% endif %}
+                        </div>
+                        <div class="card-body" align="left">
+                            {% if row.0.0.title %}
+                                <h5 class="card-title">{{row.0.0.title}}</h5>
+                                <footer class="blockquote-footer footer_position">Last updated: <cite>{{row.0.0.update_date}}</cite></footer>
+                                <br><br>
+                                <a href="/offer_details/{{row.0.0.id}}" class="btn btn-primary bottom_position mb-2">Szczegóły</a>
+                            {% else %}
+                                <h5 class="card-title"></h5>
+                                <p class="card-text"></p>
+                                <a href="#" class="btn btn-primary bottom_position">Szczegóły</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </center>
+            </td>
+            <td>
+                <center>
+                    {% if row.1.0.highlight is True %}
+                    <div class="card mb-3 mb-5 border-warning rounded bg-white shadow" style="border-width: 2px;">
+                    {% else %}
+                    <div class="card mb-3 mb-5 border-info rounded bg-white shadow" style="border-width: 2px;">
+                    {% endif %}
+                        <div class="embed-responsive embed-responsive-1by1">
+                            {% if row.1.1.file %}
+                                <img class="card-img-top embed-responsive-item" src="/media/{{row.1.1.file}}">
+                            {% else %}
+                                <img class="card-img-top embed-responsive-item" src="/media/graphic/default.png">
+                            {% endif %}
+                        </div>
+                        <div class="card-body" align="left">
+                            {% if row.1.0.title %}
+                                <h5 class="card-title">{{row.1.0.title}}</h5>
+                                <footer class="blockquote-footer footer_position">Last updated: <cite>{{row.1.0.update_date}}</cite></footer>
+                                <br><br>
+                                <a href="/offer_details/{{row.1.0.id}}" class="btn btn-primary bottom_position mb-2">Szczegóły</a>
+                            {% else %}
+                                <h5 class="card-title"></h5>
+                                <p class="card-text"></p>
+                                <a href="#" class="btn btn-primary">Szczegóły</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </center>
+            </td>
+            <td>
+                <center>
+                    {% if row.2.0.highlight is True %}
+                    <div class="card mb-3 mb-5 border-warning rounded bg-white shadow" style="border-width: 2px;">
+                    {% else %}
+                    <div class="card mb-3 mb-5 border-info rounded bg-white shadow" style="border-width: 2px;">
+                    {% endif %}
+                        <div class="embed-responsive embed-responsive-1by1">
+                            {% if row.2.1.file %}
+                                <img class="card-img-top embed-responsive-item" src="/media/{{row.2.1.file}}">
+                            {% else %}
+                                <img class="card-img-top embed-responsive-item" src="/media/graphic/default.png">
+                            {% endif %}
+                        </div>
+                        <div class="card-body" align="left">
+                            {% if row.2.0.title %}
+                                <h5 class="card-title">{{row.2.0.title}}</h5>
+                                <footer class="blockquote-footer footer_position">Last updated: <cite>{{row.2.0.update_date}}</cite></footer>
+                                <br><br>
+                                <a href="/offer_details/{{row.2.0.id}}" class="btn btn-primary bottom_position mb-2">Szczegóły</a>
+                            {% else %}
+                                <h5 class="card-title"></h5>
+                                <p class="card-text"></p>
+                                <a href="#" class="btn btn-primary">Szczegóły</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </center>
+            </td>
+            <td>
+                <center>
+                    {% if row.2.0.highlight is True %}
+                    <div class="card mb-3 mb-5 border-warning rounded bg-white shadow" style="border-width: 2px;">
+                    {% else %}
+                    <div class="card mb-3 mb-5 border-info rounded bg-white shadow" style="border-width: 2px;">
+                    {% endif %}
+                        <div class="embed-responsive embed-responsive-1by1">
+                            {% if row.3.1.file %}
+                                <img class="card-img-top embed-responsive-item" src="/media/{{row.3.1.file}}">
+                            {% else %}
+                                <img class="card-img-top embed-responsive-item" src="/media/graphic/default.png">
+                            {% endif %}
+                        </div>
+                        <div class="card-body" align="left">
+                            {% if row.3.0.title %}
+                                <h5 class="card-title">{{row.3.0.title}}</h5>
+                                <footer class="blockquote-footer footer_position">Last updated: <cite>{{row.3.0.update_date}}</cite></footer>
+                                <br><br>
+                                <a href="/offer_details/{{row.3.0.id}}" class="btn btn-primary bottom_position mb-2">Szczegóły</a>
+                            {% else %}
+                                <h5 class="card-title"></h5>
+                                <p class="card-text"></p>
+                                <a href="#" class="btn btn-primary">Szczegóły</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </center>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock content %}
+
+</body>
+</html>
